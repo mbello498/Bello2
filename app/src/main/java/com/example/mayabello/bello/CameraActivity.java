@@ -2,9 +2,12 @@ package com.example.mayabello.bello;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.graphics.Camera;
 import android.media.FaceDetector;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.OrientationEventListener;
 import android.view.SurfaceView;
 import android.view.View;
@@ -12,16 +15,19 @@ import android.view.View.OnClickListener;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 
 public class CameraActivity extends Activity {
 
+
     Animation fadeIn;
     Animation fadeOut;
     TextView myText1;
     Button activity_camera1;
-    /******************************
+    ImageView camera_imageView;
+    /*******************************
      * vars for camera
      **********************************************/
     public static final String TAG = CameraActivity.class.getSimpleName();
@@ -60,6 +66,29 @@ public class CameraActivity extends Activity {
         }
     }
     */
+
+    /******
+     * bucky's video
+     *************/
+
+    static final int REQUEST_IMAGE_CAPTURE = 1;
+    ImageView camera_ImageView;
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK ) {
+            // get the data
+            Bundle extras = data.getExtras();
+            Bitmap photo = (Bitmap) extras.get("data");
+            camera_imageView.setImageBitmap(photo);
+        }
+    }
+
+    /****
+     * end bucky's video
+     ***********/
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,6 +103,10 @@ public class CameraActivity extends Activity {
         mOrientationEventListener.enable();
         /************* used for actual camera ****************************************************/
 
+        // does the user have a camera
+        if (!hasCamera()) {
+            activity_camera1.setEnabled(false);
+        }
 
         /************* used for animation of text ************************************************/
         myText1 = (TextView) findViewById(R.id.myText1);
@@ -98,10 +131,36 @@ public class CameraActivity extends Activity {
         activity_camera1.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View arg0) {
+                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                // take a pic and pass reults along to onActivityResult
+                startActivityForResult(intent, REQUEST_IMAGE_CAPTURE);
+
+                /*
                 Intent intent = new Intent(CameraActivity.this, FaceDetectionActivity.class);
                 startActivity(intent);
+                */
             }
         });
+
+
+
+        /*
+        @Override
+        protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+            if(requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK ) {
+                // get the data
+                Bundle extras = data.getExtras();
+                Bitmap photo = (Bitmap) extras.get("data");
+                camera_imageView.setImageBitmap(photo);
+            }
+        }
+        */
     }
+    // does the user have a camera, can be any camera at all
+    private boolean hasCamera() {
+        return getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY);
+    }
+
+    
 }
 

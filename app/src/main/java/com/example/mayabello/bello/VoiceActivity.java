@@ -6,8 +6,6 @@ import android.graphics.LightingColorFilter;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -54,11 +52,11 @@ public class VoiceActivity extends Activity{
             // b7 = (Button) findViewById(R.id.button7);
             // b8 = (Button) findViewById(R.id.button8);
             voice_next = (Button) findViewById(R.id.voice_next);
-            Animation fadeIn;
-            fadeIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_in);
-            myText1.startAnimation(fadeIn);
+            // Animation fadeIn;
+            // fadeIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_in);
+            // myText1.startAnimation(fadeIn);
 
-            /* button 1*********************************** */
+            /* button 1************************************* */
             t1=new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
                 @Override
                 public void onInit(int status) {
@@ -75,6 +73,7 @@ public class VoiceActivity extends Activity{
                     Toast.makeText(getApplicationContext(), toSpeak,Toast.LENGTH_SHORT).show();
                     t1.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
                     b1.getBackground().setColorFilter(new LightingColorFilter(0xff000000, 0xff000000));
+
                 }
             });
 
